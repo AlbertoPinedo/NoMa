@@ -1,14 +1,238 @@
-:root { font-family: Inter, system-ui, sans-serif; color: #15202b; }
-body { margin: 0; background: #f5f7fb; }
-.app { max-width: 760px; margin: 0 auto; padding: 1rem; }
-.subtitle { color: #546; }
-.card { background: #fff; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
-label { display: block; margin: 0.5rem 0; }
-input[type='text'], input:not([type]) { width: 100%; }
-input, button { font-size: 1rem; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccd; }
-button { background: #2457ff; color: #fff; border: none; cursor: pointer; }
-button:disabled { background: #9eb0ff; cursor: not-allowed; }
-.checks { display: grid; gap: 0.4rem; }
-.status { font-size: 1.3rem; }
-.error { color: #b90021; font-weight: 600; }
-.note { color: #556; font-size: 0.9rem; }
+:root {
+  font-family: Inter, system-ui, sans-serif;
+  color: #15202b;
+  background: #f5f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f5f7fb;
+}
+
+.app {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(1rem + env(safe-area-inset-top)) 1rem calc(1rem + env(safe-area-inset-bottom));
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: rgba(245, 247, 251, 0.98);
+  padding-bottom: 0.75rem;
+  backdrop-filter: blur(8px);
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.subtitle {
+  color: #546;
+}
+
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+label {
+  display: block;
+  margin: 0.6rem 0;
+  font-size: 1rem;
+}
+
+input,
+button {
+  font-size: 1rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid #ccd;
+  min-height: 44px;
+}
+
+input {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+button {
+  background: #2457ff;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #9eb0ff;
+  cursor: not-allowed;
+}
+
+.ghost-button {
+  background: #eaf0ff;
+  color: #17328f;
+}
+
+.checks {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.checks label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.checks input[type='checkbox'] {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0;
+}
+
+.status {
+  font-size: 1.3rem;
+}
+
+.error {
+  color: #b90021;
+  font-weight: 600;
+}
+
+.install-card p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.photo-capture .shutter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f1f5ff;
+  border: 1px solid #d7e1ff;
+  padding: 0.65rem 0.75rem;
+  border-radius: 12px;
+  min-height: 44px;
+}
+
+.photo-capture .shutter span {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #17328f;
+  background: #fff;
+}
+
+.photo-capture .shutter:active span {
+  background: #17328f;
+}
+
+.photo-capture input,
+.preview-actions input {
+  display: none;
+}
+
+.photo-preview img {
+  width: 100%;
+  border-radius: 10px;
+  margin-bottom: 0.75rem;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.preview-actions label {
+  margin: 0;
+  background: #2457ff;
+  color: #fff;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.scanner-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.18);
+  padding: 1rem;
+  z-index: 20;
+  max-height: 85vh;
+}
+
+.scanner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.scanner-header h2 {
+  margin: 0;
+}
+
+.scanner-frame {
+  position: relative;
+  margin-top: 0.75rem;
+}
+
+.scanner-region {
+  min-height: 280px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.scanner-overlay {
+  position: absolute;
+  inset: 16px;
+  border: 2px solid rgba(36, 87, 255, 0.75);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+.scanner-actions {
+  margin-top: 0.75rem;
+}
+
+.detected {
+  color: #0f7b2f;
+  font-weight: 700;
+}
+
+@media (orientation: landscape) {
+  .app {
+    max-width: 960px;
+  }
+
+  .scanner-sheet {
+    max-width: 760px;
+    margin: 0 auto;
+    left: 1rem;
+    right: 1rem;
+  }
+}
