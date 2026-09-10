@@ -24,6 +24,7 @@ export function PhotoCapture({ file, onFileChange }: PhotoCaptureProps) {
       <div className="photo-capture">
         <label className="shutter">
           <input
+            className="visually-hidden-input"
             type="file"
             accept="image/*"
             capture="environment"
@@ -46,6 +47,7 @@ export function PhotoCapture({ file, onFileChange }: PhotoCaptureProps) {
         <label>
           Retry photo
           <input
+            className="visually-hidden-input"
             type="file"
             accept="image/*"
             capture="environment"

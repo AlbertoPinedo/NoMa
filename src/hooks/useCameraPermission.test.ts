@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isIosDevice, normalizeScannedCode } from './useCameraPermission'
+import { isIosDevice, normalizeScannedCode } from '../utils/mobile'
 
 describe('mobile helper utilities', () => {
   it('normalizes scanned values to 13 digits max', () => {

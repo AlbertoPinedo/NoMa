@@ -3,13 +3,14 @@ import axios from 'axios'
 import { CameraPermission } from './components/CameraPermission'
 import { PhotoCapture } from './components/PhotoCapture'
 import { Scanner } from './components/Scanner'
-import { isIosDevice, normalizeScannedCode, useCameraPermission } from './hooks/useCameraPermission'
+import { useCameraPermission } from './hooks/useCameraPermission'
 import { classifyProduct } from './services/classifier'
 import { detectFromLabelText } from './services/moroccoDetector'
 import { fetchProductByGtin } from './services/openFoodFacts'
 import { extractTextFromImage } from './services/ocrService'
 import { useStrictModeStore } from './store/strictModeStore'
 import type { ClassificationResult } from './types'
+import { isIosDevice, normalizeScannedCode } from './utils/mobile'
 
 const EAN13 = /^\d{13}$/
 
@@ -32,9 +33,12 @@ export function App() {
   const [scannerOpen, setScannerOpen] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [ocrProgress, setOcrProgress] = useState(0)
+  const [cacheMessage, setCacheMessage] = useState('')
 
   const isIos = typeof navigator !== 'undefined' && isIosDevice(navigator.userAgent)
-  const standalone = typeof window !== 'undefined' && window.matchMedia('(display-mode: standalone)').matches
+  const standalone =
+    typeof window !== 'undefined' &&
+    (window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true)
   const canSubmit = useMemo(() => EAN13.test(gtin), [gtin])
 
   async function analyze(inputCode = gtin) {
@@ -96,9 +100,13 @@ export function App() {
   }
 
   async function clearCache() {
-    if (!('caches' in window)) return
+    if (!('caches' in window)) {
+      setCacheMessage('Cache API is not available on this browser.')
+      return
+    }
     const names = await caches.keys()
     await Promise.all(names.map((name) => caches.delete(name)))
+    setCacheMessage('Cached data was cleared.')
   }
 
   return (
@@ -161,6 +169,7 @@ export function App() {
           <button type="button" className="ghost-button" onClick={() => void clearCache()}>
             Clear cache
           </button>
+          {cacheMessage ? <p>{cacheMessage}</p> : null}
         </section>
       ) : null}
 
@@ -185,6 +194,8 @@ export function App() {
           if (EAN13.test(normalized)) {
             setGtin(normalized)
             void analyze(normalized)
+          } else {
+            setError('Scanned code is not a valid EAN-13.')
           }
         }}
       />

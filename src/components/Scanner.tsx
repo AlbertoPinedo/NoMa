@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode'
 
 interface ScannerProps {
@@ -9,10 +9,17 @@ interface ScannerProps {
 
 export function Scanner({ open, onDetected, onClose }: ScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null)
+  const onDetectedRef = useRef(onDetected)
+  const onCloseRef = useRef(onClose)
   const [detectedCode, setDetectedCode] = useState('')
   const [torchEnabled, setTorchEnabled] = useState(false)
   const [torchAvailable, setTorchAvailable] = useState(false)
-  const regionId = useMemo(() => `scanner-region-${Math.random().toString(36).slice(2)}`, [])
+  const regionId = `scanner-region-${useId().replace(/:/g, '')}`
+
+  useEffect(() => {
+    onDetectedRef.current = onDetected
+    onCloseRef.current = onClose
+  }, [onClose, onDetected])
 
   useEffect(() => {
     if (!open) return
@@ -39,8 +46,8 @@ export function Scanner({ open, onDetected, onClose }: ScannerProps) {
           if (cancelled) return
           setDetectedCode(decodedText)
           void scanner.stop().finally(() => {
-            onDetected(decodedText)
-            onClose()
+            onDetectedRef.current(decodedText)
+            onCloseRef.current()
           })
         },
         () => undefined,
@@ -50,7 +57,7 @@ export function Scanner({ open, onDetected, onClose }: ScannerProps) {
         setTorchAvailable(Boolean(capabilities?.torchFeature?.supported))
       })
       .catch(() => {
-        onClose()
+        onCloseRef.current()
       })
 
     return () => {
@@ -63,7 +70,7 @@ export function Scanner({ open, onDetected, onClose }: ScannerProps) {
         void current.clear()
       }
     }
-  }, [open, onClose, onDetected, regionId])
+  }, [open, regionId])
 
   async function toggleTorch() {
     const scanner = scannerRef.current
