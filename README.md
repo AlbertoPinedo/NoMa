@@ -25,6 +25,7 @@ npm run dev
 ```bash
 npm test -- src/services/moroccoDetector.test.ts
 npm test -- src/hooks/useCameraPermission.test.ts
+npm test -- src/utils/mobile.test.ts
 npm run lint
 npm run build
 ```

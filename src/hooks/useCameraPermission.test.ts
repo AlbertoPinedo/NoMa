@@ -1,14 +1,36 @@
-import { describe, expect, it } from 'vitest'
-import { isIosDevice, normalizeScannedCode } from '../utils/mobile'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { queryCameraPermission, requestCameraPermission } from './useCameraPermission'
 
-describe('mobile helper utilities', () => {
-  it('normalizes scanned values to 13 digits max', () => {
-    expect(normalizeScannedCode('EAN: 8411234567890')).toBe('8411234567890')
-    expect(normalizeScannedCode('12345678901234')).toBe('1234567890123')
+describe('useCameraPermission helpers', () => {
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
-  it('detects iOS user agents', () => {
-    expect(isIosDevice('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)')).toBe(true)
-    expect(isIosDevice('Mozilla/5.0 (Linux; Android 14; Pixel)')).toBe(false)
+  it('returns unknown when permission API is unavailable', async () => {
+    vi.stubGlobal('navigator', { permissions: undefined })
+    await expect(queryCameraPermission()).resolves.toBe('unknown')
+  })
+
+  it('returns granted when getUserMedia succeeds', async () => {
+    const stop = vi.fn()
+    const getUserMedia = vi.fn().mockResolvedValue({
+      getTracks: () => [{ stop }],
+    })
+
+    vi.stubGlobal('navigator', {
+      mediaDevices: { getUserMedia },
+    })
+
+    await expect(requestCameraPermission()).resolves.toBe('granted')
+    expect(stop).toHaveBeenCalledOnce()
+  })
+
+  it('returns denied when getUserMedia fails', async () => {
+    const getUserMedia = vi.fn().mockRejectedValue(new Error('denied'))
+    vi.stubGlobal('navigator', {
+      mediaDevices: { getUserMedia },
+    })
+
+    await expect(requestCameraPermission()).resolves.toBe('denied')
   })
 })

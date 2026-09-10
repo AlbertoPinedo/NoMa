@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ChangeEvent } from 'react'
 
 interface PhotoCaptureProps {
   file: File | null
@@ -7,6 +7,11 @@ interface PhotoCaptureProps {
 
 export function PhotoCapture({ file, onFileChange }: PhotoCaptureProps) {
   const [previewUrl, setPreviewUrl] = useState<string>('')
+
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    onFileChange(event.target.files?.[0] ?? null)
+    event.target.value = ''
+  }
 
   useEffect(() => {
     if (!file) {
@@ -28,7 +33,7 @@ export function PhotoCapture({ file, onFileChange }: PhotoCaptureProps) {
             type="file"
             accept="image/*"
             capture="environment"
-            onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+            onChange={handleChange}
           />
           <span aria-hidden="true" />
           Take photo for OCR
@@ -51,7 +56,7 @@ export function PhotoCapture({ file, onFileChange }: PhotoCaptureProps) {
             type="file"
             accept="image/*"
             capture="environment"
-            onChange={(event) => onFileChange(event.target.files?.[0] ?? null)}
+            onChange={handleChange}
           />
         </label>
       </div>

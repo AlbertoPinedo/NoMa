@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 export type CameraPermissionState = 'unknown' | 'granted' | 'denied' | 'prompt'
 
-async function queryPermission(): Promise<CameraPermissionState> {
+export async function queryCameraPermission(): Promise<CameraPermissionState> {
   if (typeof navigator === 'undefined' || !navigator.permissions) return 'unknown'
 
   try {
@@ -17,22 +17,26 @@ export function useCameraPermission() {
   const [state, setState] = useState<CameraPermissionState>('unknown')
 
   useEffect(() => {
-    queryPermission().then(setState)
+    queryCameraPermission().then(setState)
   }, [])
 
   const request = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } },
-      })
-      stream.getTracks().forEach((track) => track.stop())
-      setState('granted')
-      return 'granted' as const
-    } catch {
-      setState('denied')
-      return 'denied' as const
-    }
+    const permission = await requestCameraPermission()
+    setState(permission)
+    return permission
   }, [])
 
   return { state, request, setState }
+}
+
+export async function requestCameraPermission(): Promise<'granted' | 'denied'> {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: 'environment' } },
+    })
+    stream.getTracks().forEach((track) => track.stop())
+    return 'granted'
+  } catch {
+    return 'denied'
+  }
 }

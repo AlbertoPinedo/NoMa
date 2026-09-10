@@ -1,5 +1,5 @@
 export function normalizeScannedCode(value: string): string {
-  return value.replace(/\D/g, '').slice(0, 13)
+  return value.replace(/\D/g, '')
 }
 
 export function isIosDevice(userAgent: string): boolean {

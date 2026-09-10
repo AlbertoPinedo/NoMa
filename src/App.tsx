@@ -127,7 +127,7 @@ export function App() {
         </section>
       ) : null}
 
-      {(camera.state === 'prompt' || camera.state === 'unknown' || camera.state === 'denied') ? (
+      {camera.state !== 'granted' ? (
         <CameraPermission denied={camera.state === 'denied'} onRequest={() => void camera.request()} />
       ) : null}
 

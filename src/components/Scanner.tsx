@@ -47,7 +47,7 @@ export function Scanner({ open, onDetected, onClose }: ScannerProps) {
           setDetectedCode(decodedText)
           void scanner.stop().finally(() => {
             onDetectedRef.current(decodedText)
-            onCloseRef.current()
+            window.setTimeout(() => onCloseRef.current(), 700)
           })
         },
         () => undefined,
