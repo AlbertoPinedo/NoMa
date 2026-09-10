@@ -4,12 +4,14 @@ React + TypeScript app (Vite) to detect explicit Morocco references in consumer 
 
 ## MVP features
 
-- EAN-13 manual scanner input
+- Live camera scanner (QR + EAN-13) with `html5-qrcode`
+- Manual EAN-13 fallback when camera is denied
+- Mobile-first UI with sticky header, bottom scanner sheet, and touch-friendly controls
 - OpenFoodFacts live lookup (no product caching/storage)
 - Strict-mode Morocco reference detection
-- OCR fallback with Tesseract.js when classification is uncertain
+- Photo capture + preview for OCR fallback with progress
+- PWA install support (manifest + service worker + iPhone add-to-home-screen guidance)
 - Result states: 🟢 Accept / 🔴 Reject / 🟡 Review
-- Optional configurable LLM analyzer hook (heuristics are default/offline)
 
 ## Run
 
@@ -22,6 +24,8 @@ npm run dev
 
 ```bash
 npm test -- src/services/moroccoDetector.test.ts
+npm test -- src/hooks/useCameraPermission.test.ts
+npm test -- src/utils/mobile.test.ts
 npm run lint
 npm run build
 ```

@@ -1,9 +1,8 @@
-node_modules
-dist
-coverage
+node_modules/
+dist/
+coverage/
 *.log
 .DS_Store
-.idea
-.vscode
-/tmp
-/home/runner/work/NoMa/NoMa/tmp
+.idea/
+.vscode/
+tmp/
