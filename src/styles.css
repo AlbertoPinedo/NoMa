@@ -188,9 +188,10 @@ button:disabled {
   background: #fff;
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -6px 18px rgba(0, 0, 0, 0.18);
-  padding: 1rem;
+  padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
   z-index: 20;
   max-height: 85vh;
+  overflow-y: auto;
 }
 
 .scanner-header {

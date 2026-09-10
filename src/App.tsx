@@ -10,7 +10,7 @@ import { fetchProductByGtin } from './services/openFoodFacts'
 import { extractTextFromImage } from './services/ocrService'
 import { useStrictModeStore } from './store/strictModeStore'
 import type { ClassificationResult } from './types'
-import { isIosDevice, normalizeScannedCode } from './utils/mobile'
+import { isIosDevice } from './utils/mobile'
 
 const EAN13 = /^\d{13}$/
 
@@ -195,10 +195,10 @@ export function App() {
         onClose={() => setScannerOpen(false)}
         onError={setError}
         onDetected={(code) => {
-          const normalized = normalizeScannedCode(code)
-          if (EAN13.test(normalized)) {
-            setGtin(normalized)
-            void analyze(normalized)
+          const trimmed = code.trim()
+          if (EAN13.test(trimmed)) {
+            setGtin(trimmed)
+            void analyze(trimmed)
           } else {
             setError('Scanned code is not a valid EAN-13.')
           }

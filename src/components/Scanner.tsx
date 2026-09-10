@@ -56,6 +56,7 @@ export function Scanner({ open, onDetected, onClose, onError }: ScannerProps) {
         () => undefined,
       )
       .then(() => {
+        // html5-qrcode exposes torchFeature() at runtime but the wrapper type is not exported here.
         const capabilities = scanner.getRunningTrackCameraCapabilities() as {
           torchFeature?: () => { isSupported: () => boolean }
         }
