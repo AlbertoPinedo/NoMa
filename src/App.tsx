@@ -36,9 +36,13 @@ export function App() {
   const [cacheMessage, setCacheMessage] = useState('')
 
   const isIos = typeof navigator !== 'undefined' && isIosDevice(navigator.userAgent)
-  const standalone =
-    typeof window !== 'undefined' &&
-    (window.matchMedia('(display-mode: standalone)').matches || (navigator as Navigator & { standalone?: boolean }).standalone === true)
+  const standalone = useMemo(
+    () =>
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(display-mode: standalone)').matches ||
+        (navigator as Navigator & { standalone?: boolean }).standalone === true),
+    [],
+  )
   const canSubmit = useMemo(() => EAN13.test(gtin), [gtin])
 
   async function analyze(inputCode = gtin) {
@@ -189,6 +193,7 @@ export function App() {
       <Scanner
         open={scannerOpen}
         onClose={() => setScannerOpen(false)}
+        onError={setError}
         onDetected={(code) => {
           const normalized = normalizeScannedCode(code)
           if (EAN13.test(normalized)) {

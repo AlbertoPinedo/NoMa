@@ -17,7 +17,17 @@ export function useCameraPermission() {
   const [state, setState] = useState<CameraPermissionState>('unknown')
 
   useEffect(() => {
-    queryCameraPermission().then(setState)
+    let active = true
+    queryCameraPermission()
+      .then((value) => {
+        if (active) setState(value)
+      })
+      .catch(() => {
+        if (active) setState('unknown')
+      })
+    return () => {
+      active = false
+    }
   }, [])
 
   const request = useCallback(async () => {

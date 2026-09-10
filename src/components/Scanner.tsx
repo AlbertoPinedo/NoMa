@@ -5,12 +5,14 @@ interface ScannerProps {
   open: boolean
   onDetected: (code: string) => void
   onClose: () => void
+  onError?: (message: string) => void
 }
 
-export function Scanner({ open, onDetected, onClose }: ScannerProps) {
+export function Scanner({ open, onDetected, onClose, onError }: ScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null)
   const onDetectedRef = useRef(onDetected)
   const onCloseRef = useRef(onClose)
+  const onErrorRef = useRef(onError)
   const [detectedCode, setDetectedCode] = useState('')
   const [torchEnabled, setTorchEnabled] = useState(false)
   const [torchAvailable, setTorchAvailable] = useState(false)
@@ -19,7 +21,8 @@ export function Scanner({ open, onDetected, onClose }: ScannerProps) {
   useEffect(() => {
     onDetectedRef.current = onDetected
     onCloseRef.current = onClose
-  }, [onClose, onDetected])
+    onErrorRef.current = onError
+  }, [onClose, onDetected, onError])
 
   useEffect(() => {
     if (!open) return
@@ -53,10 +56,13 @@ export function Scanner({ open, onDetected, onClose }: ScannerProps) {
         () => undefined,
       )
       .then(() => {
-        const capabilities = scanner.getRunningTrackCapabilities() as { torchFeature?: { supported?: boolean } }
-        setTorchAvailable(Boolean(capabilities?.torchFeature?.supported))
+        const capabilities = scanner.getRunningTrackCameraCapabilities() as {
+          torchFeature?: () => { isSupported: () => boolean }
+        }
+        setTorchAvailable(Boolean(capabilities.torchFeature?.().isSupported()))
       })
       .catch(() => {
+        onErrorRef.current?.('Camera could not start. Use manual EAN-13 input.')
         onCloseRef.current()
       })
 
