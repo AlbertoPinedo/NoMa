@@ -1,0 +1,14 @@
+:root { font-family: Inter, system-ui, sans-serif; color: #15202b; }
+body { margin: 0; background: #f5f7fb; }
+.app { max-width: 760px; margin: 0 auto; padding: 1rem; }
+.subtitle { color: #546; }
+.card { background: #fff; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); }
+label { display: block; margin: 0.5rem 0; }
+input[type='text'], input:not([type]) { width: 100%; }
+input, button { font-size: 1rem; padding: 0.5rem; border-radius: 8px; border: 1px solid #ccd; }
+button { background: #2457ff; color: #fff; border: none; cursor: pointer; }
+button:disabled { background: #9eb0ff; cursor: not-allowed; }
+.checks { display: grid; gap: 0.4rem; }
+.status { font-size: 1.3rem; }
+.error { color: #b90021; font-weight: 600; }
+.note { color: #556; font-size: 0.9rem; }
